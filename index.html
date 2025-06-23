@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Environmental Assessment Interactive Handbook </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Slate Blue -->
+    <!-- Application Structure Plan: The application is designed as a single-page application (SPA) with a fixed sidebar for primary navigation and a dynamic main content area. This structure was chosen over a linear document to handle the report's density, allowing users to non-linearly explore key themes like methodologies, effectiveness, and case studies. Each navigation item reveals a distinct, self-contained module (e.g., an interactive chart-driven comparison of methodologies, a filterable grid of global case studies). This thematic, modular approach breaks down complex information into digestible chunks, promoting user-driven exploration and preventing overwhelm. Key interactions include tabbed content, filterable grids, and expandable cards, which hide detailed information until explicitly requested, ensuring a clean, high-level overview by default. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Core SEA Methodologies -> Goal: Compare -> Viz/Presentation: Interactive Tabbed Panels + Bar Chart (Chart.js) -> Interaction: User clicks tabs to switch methodology details; the bar chart provides a quantitative comparison of qualitative attributes. Justification: Simplifies comparison of multiple complex frameworks.
+        - Report Info: SEA Effectiveness Dimensions -> Goal: Explain/Compare -> Viz/Presentation: Grid of clickable cards + Radar Chart (Chart.js) -> Interaction: Hovering/clicking cards reveals details for each dimension; the radar chart offers a holistic, visual summary of what balanced effectiveness looks like. Justification: Makes abstract concepts of "effectiveness" tangible and easy to grasp.
+        - Report Info: Global Application Cases -> Goal: Organize/Explore -> Viz/Presentation: Filterable Grid of Cards -> Interaction: Users select filters (country, sector) to dynamically display relevant cases. Clicking a card opens a modal with details. Justification: Manages a large, text-heavy dataset, making it searchable and accessible rather than an overwhelming list.
+        - Report Info: Conceptual Models (e.g., Logic of Choice) -> Goal: Explain -> Viz/Presentation: HTML/CSS Diagram -> Interaction: Static visual aid. Justification: Provides a clear visual representation of a core theoretical concept without external libraries.
+        - Library/Method: All charts are rendered on <canvas> using Chart.js. All diagrams are built with semantic HTML and styled with Tailwind CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f7f4; color: #333; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .nav-item { transition: all 0.2s ease-in-out; }
+        .nav-item.active { background-color: #3B5998; color: white; }
+        .nav-item:hover { background-color: #e0e7ff; }
+        .nav-item.active:hover { background-color: #3B5998; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .tab-button.active { border-color: #3B5998; background-color: #e0e7ff; }
+        .modal-backdrop {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none; align-items: center; justify-content: center; z-index: 50;
+        }
+        .modal-content {
+            background-color: white; padding: 2rem; border-radius: 0.5rem;
+            max-width: 90vw; max-height: 90vh; overflow-y: auto; width: 60rem;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 bg-white shadow-md flex-shrink-0">
+            <div class="p-6">
+                <h1 class="text-xl font-bold text-gray-800">Strategic Environmental Assessment</h1>
+                <p class="text-sm text-gray-500">Interactive Handbook Compiled by Ren Shijie's reading notes</p>
+            </div>
+            <nav id="main-nav" class="mt-6">
+                <a href="#introduction" class="nav-item flex items-center px-6 py-3 text-gray-700 active">
+                    <span class="mx-3">I. Introduction to SEA</span>
+                </a>
+                <a href="#methodologies" class="nav-item flex items-center px-6 py-3 text-gray-700">
+                    <span class="mx-3">II. Core Methodologies</span>
+                </a>
+                <a href="#effectiveness" class="nav-item flex items-center px-6 py-3 text-gray-700">
+                    <span class="mx-3">III. Dimensions of Effectiveness</span>
+                </a>
+                <a href="#cases" class="nav-item flex items-center px-6 py-3 text-gray-700">
+                    <span class="mx-3">IV. Global Application Cases</span>
+                </a>
+                <a href="#challenges" class="nav-item flex items-center px-6 py-3 text-gray-700">
+                    <span class="mx-3">V. Challenges & Weaknesses</span>
+                </a>
+                 <a href="#theory" class="nav-item flex items-center px-6 py-3 text-gray-700">
+                    <span class="mx-3">VI. Theoretical Foundations</span>
+                </a>
+                <a href="#conclusion" class="nav-item flex items-center px-6 py-3 text-gray-700">
+                    <span class="mx-3">VII. Conclusion & Future</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main content -->
+        <main class="flex-1 overflow-y-auto bg-[#f8f7f4]">
+            <div class="p-4 md:p-8">
+                <!-- Introduction Section -->
+                <section id="introduction" class="content-section active">
+                    <!-- Content injected by JS -->
+                </section>
+
+                <!-- Methodologies Section -->
+                <section id="methodologies" class="content-section">
+                    <!-- Content injected by JS -->
+                </section>
+
+                <!-- Effectiveness Section -->
+                <section id="effectiveness" class="content-section">
+                    <!-- Content injected by JS -->
+                </section>
+                
+                <!-- Cases Section -->
+                <section id="cases" class="content-section">
+                    <!-- Content injected by JS -->
+                </section>
+                
+                <!-- Challenges Section -->
+                <section id="challenges" class="content-section">
+                     <!-- Content injected by JS -->
+                </section>
+
+                <!-- Theory Section -->
+                <section id="theory" class="content-section">
+                     <!-- Content injected by JS -->
+                </section>
+
+                <!-- Conclusion Section -->
+                <section id="conclusion" class="content-section">
+                     <!-- Content injected by JS -->
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Case Studies -->
+    <div id="case-modal" class="modal-backdrop">
+        <div id="case-modal-content" class="modal-content">
+            <!-- Modal content injected by JS -->
+        </div>
+    </div>
+
+
+    <script>
+        const AppData = {
+            introduction: {
+                title: 'I. Welcome to the Strategic Environmental Assessment (SEA) Interactive Handbook',
+                introduction: 'Strategic Environmental Assessment (SEA) is a systematic decision support process designed to ensure environmental considerations are fully integrated into the early stages of policy, plan, and program (PPP) development, thereby promoting sustainable development. This handbook will guide you through the core concepts, methodologies, global practices, and challenges facing SEA.This website was compiled by Ren Shijie to assist Zemi first pre. It is hoped that it will be of help to those who need to read this book.',
+
+                sections: [
+                    {
+                        title: 'Definition and Purpose of SEA: Core Concepts and Aims',
+                        content: 'Strategic Environmental Assessment (SEA) is fundamentally understood as the environmental assessment of policies, plans, and programs (PPPs), a concept that emerged in the late 1980s. Its conceptual roots can be traced to earlier discussions on environmental impact assessment above the project level, particularly the 1970 US National Environmental Policy Act (NEPA), which broadly referred to "actions" rather than distinguishing between project and strategic levels. Thereafter, Programmatic Environmental Impact Statements (PEIS) became the term for environmental assessments above the project level in the US. The dual purpose of SEA is to provide a high level of environmental protection and to integrate environmental considerations into the preparation and adoption of PPPs, thereby promoting sustainable development. This requires environmental assessment of initiatives likely to have significant environmental effects. The EU Directive 2001/42/EC (commonly known as the "SEA Directive") cemented SEA\'s place in the vocabulary by mandating its transposition into EU member states by 2004, though notably, this directive does not cover policies. Globally, SEA has seen widespread application, with over 60 countries currently having formal requirements, including EU member states, signatories to the Espoo Convention SEA Protocol, and other countries like Australia, Canada, Chile, China, India, New Zealand, South Africa, and Thailand. There are also numerous voluntary applications, especially in developing countries, promoted by multilateral development banks like the World Bank.'
+                    },
+                    {
+                        title: 'Historical Evolution and Deepening Understanding of SEA',
+                        content: 'Initially, SEA was conceived as the direct application of the Environmental Impact Assessment (EIA) process to strategic initiatives. However, practice quickly showed that EIA-based methods were less applicable at higher strategic levels, requiring more discursive and qualitative approaches rather than quantitative ones. SEA then evolved into a "framework" transcending mere procedures, emphasizing comprehensive coverage of tasks, alternatives, and contextual and institutional aspects such as capacities, transparency, and participation. The EU SEA Directive and the United Nations Economic Commission for Europe (UNECE) "Kiev Protocol" greatly influenced international SEA practice, making it a regular application in EU member states and impacting development banks. In recent years, SEA has been seen as a tool to promote sustainable development and achieve Sustainable Development Goals (SDGs). This reflects a shift in SEA from a purely logical, rational, and informative procedure towards one emphasizing transparency, dialogue, and empowering vulnerable groups. The field has moved from a concept of rational SEA to a more deliberative and collaborative one, recognizing SEA\'s influence on decision-makers. This is particularly relevant in "post-modern" or "post-factual" times, where emotions can be as important as scientific evidence.'
+                    },
+                    {
+                        title: 'Existing Research and Literature on SEA',
+                        content: 'SEA-related research and publications have increased substantially, with the number of papers almost doubling between 2011 and 2019. Research focuses span various sectors (spatial/land-use planning, transport, energy, water) and countries/regions (EU, Australia, Canada, New Zealand, South Africa, Brazil, India, Thailand). Integration through SEA (e.g., health, protected areas, climate change, ecosystem services) has received considerable attention. Despite growing research, there has been a lack of updated comprehensive SEA books in the last decade, highlighting a gap in materials for practitioners and researchers.'
+                    }
+                ]
+            },
+            methodologies: {
+                title: 'II. Core Methodologies',
+                introduction: 'Strategic Environmental Assessment is not a single method, but a toolbox containing various models. Different methods are applicable to different decision-making levels and contexts. This section will compare and analyze several mainstream SEA methodologies. You can click the tabs below to view detailed descriptions of different methods and use the chart to visually compare their characteristics.',
+                chartData: {
+                    labels: ['EIA-like Approaches', 'Policy Assessment-like Approaches', 'Objective-led Approaches', 'GIS-based Approaches', 'Territorial Impact Assessment', 'Systemic Approaches'],
+                    datasets: [
+                        { label: 'Strategic Influence', data: [3, 9, 7, 6, 8, 10], backgroundColor: 'rgba(59, 89, 152, 0.6)' },
+                        { label: 'Flexibility', data: [2, 10, 8, 7, 8, 9], backgroundColor: 'rgba(75, 192, 192, 0.6)' },
+                        { label: 'Data Dependency', data: [8, 4, 5, 10, 9, 6], backgroundColor: 'rgba(255, 159, 64, 0.6)' }
+                    ]
+                },
+                methodologies: [
+                    { 
+                        id: 'eia-like', name: 'EIA-like Approaches (Multi-Project Based SEA)', 
+                        description: 'This is the most common and widely applied form of SEA, particularly in EU member states. It is rooted in the traditional Environmental Impact Assessment (EIA) paradigm, focusing on the impacts and effects of draft proposals at the strategic level. It is often applied to plans and programs that contain potential developments or designated projects.',
+                        features: [
+                            '<b>Impact-centric and considers cumulative effects:</b> Primarily identifies, describes, and assesses the potential environmental impacts of each individual project within a plan or program, then considers the overall or cumulative environmental impacts of all potential projects. Simple summation of impacts is common, but more advanced methods use specific criteria or benchmarks for analysis.',
+                            '<b>Spatial focus:</b> Individual project assessments are often spatial, with recommendations for quantitative assessment using GIS and worksheets to record environmental effects at specific locations.',
+                            '<b>Tiering with EIA:</b> Typically applied to plans that will subsequently lead to EIA-bound projects, thus achieving conscious tiering between SEA and EIA.',
+                            '<b>Procedural stages:</b> Follows EIA-like procedural stages: screening, scoping, environmental report drafting, consultation/participation, proposing mitigation measures, decision-making, and monitoring/follow-up.',
+                            '<b>Pragmatic and Transparent:</b> Easy to understand and communicate, providing clear guidance for SEA practitioners and producing transparent outcomes.'
+                        ],
+                        limitations: [
+                            '<b>Policy gaps:</b> Difficult to link with higher-level policies, especially when SEA is not applied at that level, potentially leading to gaps in considering issues, tasks, and alternatives.',
+                            '<b>Limited alternative assessment:</b> Often restricted to siting alternatives rather than broader needs or systemic alternatives.',
+                            '<b>Neglects indirect/synergistic effects:</b> Simple summation of impacts may overlook complex indirect or synergistic effects.',
+                            '<b>Planning disconnect:</b> Lengthy project approval procedures can lead to plans/programs being revised before projects are actually implemented, hindering learning from past experiences.'
+                        ],
+                        case_example: 'German Federal Transport Infrastructure Plan (FTIP), which systematically assessed the environmental impacts of over 2100 project proposals. Also, the German Federal Transmission Grid Demand Plan (hotspot analysis, macro siting review, project-level monitoring feeding into SEA monitoring) and the Elbe River Flood Risk Management Plan (assessed cumulative impacts across spatial aggregation levels, abstract nature limited alternative assessment at this tier).'
+                    },
+                    { 
+                        id: 'policy-like', name: 'Policy Assessment-like Approaches (Strategic SEA Methods)', 
+                        description: 'A more flexible, objective-driven method that goes beyond traditional EIA, aiming to influence policy-making at a higher, more conceptual level. It is driven by "Strategic Thinking for Sustainability" (ST4S).',
+                        features: [
+                            '<b>Strategic Thinking for Sustainability (ST4S):</b> A conceptual model that applies strategic thinking to sustainability transition processes. It aims to integrate sustainability values, add value by analyzing opportunities and risks, and foster a strategic culture through collaboration and dialogue.',
+                            '<b>Proactive and Systemic:</b> Integrates SEA into the conceptualization and design of strategies (policy formation/formulation), generating input within these processes rather than as a standalone exercise. Emphasizes a holistic system perspective, recognizing interdependencies and unpredictability.',
+                            '<b>Focus on Root Causes:</b> Prioritizes identifying and addressing root causes of undesirable changes, not just observable symptoms.',
+                            '<b>Flexible Positioning:</b> Adapts to the decision-making process, ensuring close interaction and iteration from the early stages of decision-making.'
+                        ],
+                        limitations: ['May be difficult to implement in environments with rigid decision-making processes.'],
+                        case_example: 'SEA of the Sintra Municipal Master Plan in Portugal, which was fully integrated with the planning process from the outset, fostering collaborative stakeholder participation and leading to a redefinition of strategic objectives to strengthen environmental considerations. Also, SEA of the Chilean National Energy Policy, which facilitated strategy formulation by integrating environmental, production, social, and territorial aspects, focusing on key development issues with a long-term perspective and enhancing stakeholder participation.'
+                    },
+                    { 
+                        id: 'objective-led', name: 'Objective-led Approaches', 
+                        description: 'An assessment approach where predefined specific objectives drive the assessment process, evaluating how a policy, plan, or program contributes to achieving these objectives. In the UK, this is a preferred method, often linked to Sustainability Assessment (SA).',
+                        features: [
+                            '<b>Proactive and Objective-driven:</b> Assesses proposals against a set of predetermined SEA objectives, acting as an "environmental yardstick."',
+                            '<b>Customizable Objectives:</b> While national objectives can be considered, SEA objectives are typically tailored to the specific PPP being assessed.',
+                            '<b>Combined with Baseline-oriented:</b> Often used in conjunction with baseline-oriented SEA, which predicts impacts on the existing environmental baseline.'
+                        ],
+                        limitations: [
+                            '<b>Vague objectives:</b> Poorly worded objectives can reduce the effectiveness of the assessment.',
+                            '<b>Economic bias:</b> Economic objectives are often more explicit than environmental ones, leading to more room for interpretation of environmental aspects.',
+                            '<b>Marginal changes:</b> May only lead to marginal changes, focusing on wording rather than fundamental shifts.',
+                            '<b>Exclusion of policy tier:</b> Many SEA directives (e.g., EU SEA Directive) exclude the policy tier, which can weaken SEA\'s ability to truly assess and promote sustainable development.'
+                        ],
+                        case_example: 'The "Practical Guide to the Strategic Environmental Assessment Directive" (UK joint guidance document) states that SEA objectives provide a means to assess the environmental performance of a plan or program and its alternatives, emphasizing testing plan objectives against SEA objectives to identify synergies or inconsistencies. Examples include the Scottish National Planning Framework (Second Edition) showing conflicts between "sustainable economic growth" and SEA objectives for climate change and biodiversity. Also, the Estonian Saaremaa Fixed Link Transport Strategy (assessed strategic options against overarching objectives, fixed link alternatives assessed baseline-oriented) and the Swedish National Transport Plan 2018-29 (developed four CO2 reduction scenarios as strategic options, close integration of SEA team with national transport planning team).'
+                    },
+                    { 
+                        id: 'gis-based', name: 'GIS-based Approaches', 
+                        description: 'Utilizes Geographic Information Systems (GIS) as a powerful tool to spatially assess multi-criteria alongside public input, supporting evidence-based planning.',
+                        features: [
+                            '<b>Spatial Data Management:</b> Ability to collect, explore, analyze, model, and represent spatial data, enhancing transparency and reproducibility.',
+                            '<b>Multi-Criteria Analysis (MCA):</b> Combines objective environmental variables with subjective stakeholder preferences and policy priorities.',
+                            '<b>Visualization and Communication:</b> Facilitates visualization of environmental impacts, land-use changes, and sensitivities.',
+                            '<b>Supports all SEA Stages:</b> Applicable to every SEA stage, from screening and scoping to baseline establishment, alternative development, performance assessment, and monitoring.'
+                        ],
+                        limitations: [
+                            '<b>Data Quality and Availability:</b> Reliability depends on accurate and complete spatial data, which may be limited or fragmented.',
+                            '<b>Complex Interactions:</b> May struggle to effectively examine complex environmental interrelationships.',
+                            '<b>Modeling Assumptions:</b> Certain methods embed modeling assumptions, and high-resolution data might be missing, affecting accuracy.'
+                        ],
+                        case_example: 'SEA of the Blessington Local Area Plan in Ireland (GIS-based screening identified key environmental issues, leading to mandatory SEA). Also, SEA of the Urban Plan of Ponte San Pietro Municipality in Italy (GIS used extensively in scoping to identify challenges, formulate suggestions, and select spatial indicators, facilitating public discussion). The Environmental Sensitivity Mapping (ESM) web tool in Ireland (centralized access to over 100 public datasets, allowing creation of plan-specific sensitivity maps with user-defined weights, promoting consistency, transparency, and informing suitable development locations). And Urban Settlement Growth in Caia, Mozambique (simulated urban settlement growth under different spatial planning policies and population projections, assessed environmental performance based on indicators like deforestation). Cumulative effects assessment in the Lombardy Region, Italy (simulated zoning options to compare land-use transformation impacts on environmental performance, examining changes in spatially explicit indicators like surface runoff and landscape fragmentation).'
+                    },
+                    { 
+                        id: 'tia', name: 'Territorial Impact Assessment (TIA)', 
+                        description: 'A specific type of policy assessment-like SEA, used to understand the diverse spatial impacts of EU policies across different territories, closely linked to the concept of "territorial cohesion" (TC).',
+                        features: [
+                            '<b>Focus on Spatial and Policy Coherence:</b> Aims to address the spatial dimension of EU integration and promote overall policy coherence.',
+                            '<b>Methodology:</b> Employs both quantitative (relying on computer models) and qualitative (relying on regional and local stakeholder inputs) methods; hybrid approaches also exist.',
+                            '<b>Indicator-based:</b> Often relies on statistical indicators to describe regional situations and forecast future developments.',
+                            '<b>Consultation and Participation:</b> Emphasizes involving relevant stakeholders.'
+                        ],
+                        limitations: [
+                            '<b>Data Availability:</b> Territorial data can be scarce, requiring proxy data or derivation from GIS.',
+                            '<b>Capacity Gaps:</b> Assessment effectiveness can be limited by the assessment skills of local/regional administrators.'
+                        ],
+                        case_example: 'ESPON EATIA project (EU), which tested the effectiveness of regional/local stakeholder involvement in predicting EU policy impacts, developing a participatory approach including "learning networks." Used checklists, logical chains, and impact matrices. Also, EU cross-border cooperation projects (assessed effectiveness of funding measures to improve socio-economic, health, and environmental conditions in five EU cross-border regions, using intervention logic and Impact Assessment Matrix (IAM) combining quantitative and qualitative data, highlighting the role of local decision-makers in indicator creation and the effectiveness of combining data with expert opinion).'
+                    },
+                    { 
+                        id: 'systemic', name: 'Systemic Approaches and Tiering', 
+                        description: 'Views SEA as a comprehensive system, rather than a single process, covering policies, plans, and programs to ensure effectiveness. It emphasizes a tiering framework where different decision levels focus on specific tasks and interact with each other.',
+                        features: [
+                            '<b>Comprehensive Coverage:</b> Aims to cover all decision-making levels (policy, plan, program, project) to ensure effective environmental assessment.',
+                            '<b>Interconnectedness:</b> Recognizes that decisions at one level affect others, promoting coordination of objectives and actions across administrative levels and sectors.',
+                            '<b>Bridging Gaps:</b> Seeks to systematically address all significant issues across different levels, avoiding omissions.'
+                        ],
+                        limitations: ['While theoretically ideal, almost every real-world system contains gaps, with certain levels or links missing.'],
+                        case_example: 'Sweden\'s formal transport infrastructure planning process, illustrating complex transport planning where SEA is integrated at national, regional, and municipal levels, depicting institutions, plans, and decisions across different governance tiers. Also, Myanmar\'s Hydropower Sector Framework, which merged SEA with the development process of a Sustainable Development Framework (SDF), establishing a tiering approach for further assessment at sub-SEA levels.'
+                    }
+                ]
+            },
+            effectiveness: {
+                title: 'III. Dimensions of Effectiveness',
+                introduction: 'The success of SEA is measured not just by its adherence to legal procedures, but by a multi-dimensional framework. Understanding these dimensions helps us comprehensively evaluate and improve SEA practice. The radar chart below illustrates an ideal SEA\'s balanced performance across various dimensions. Click on the cards below to delve into the specific meaning of each dimension.',
+                chartData: {
+                    labels: ['Contextual Effectiveness', 'Procedural Effectiveness', 'Pluralistic Effectiveness', 'Substantive Effectiveness', 'Normative Effectiveness', 'Knowledge & Learning', 'Transactional Effectiveness'],
+                    datasets: [{
+                        label: 'Ideal SEA Effectiveness Performance',
+                        data: [8, 9, 8, 9, 7, 9, 6],
+                        fill: true,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgb(75, 192, 192)',
+                        pointBackgroundColor: 'rgb(75, 192, 192)',
+                    }]
+                },
+                dimensions: [
+                    { title: 'Contextual Effectiveness', icon: '🏛️', content: 'Refers to the fundamental elements existing prior to any specific plan and its SEA preparation, including legal frameworks and institutional support. A supportive SEA context includes up-to-date guidance, SEA forums for idea exchange, certification or quality checks for SEA consultants, links between SEA and other legislation (especially standards or objectives), bodies to assess the quality of SEA reports, and "SEA champions" at higher levels. This context is foundational for SEA success.<br><br><b>Influencing Factors:</b> Appropriate SEA legislation or relevant requirements (e.g., from multilateral development agencies) are fundamental. SEA assumes a "deliberative" and "rational" step-by-step planning approach where decisions are explicitly made by formal decision-makers; however, real-world planning often features power struggles, entrenched thinking, compromises, and negotiations, meaning SEA may not inform planning as initially intended. Higher-level institutional issues, such as ministries not sharing information, often lead to procedural and contextual limits like insufficient guidance, lack of training, incomplete baseline data, and limited financial resources. Lack of political commitment and community awareness of sustainable development can also hinder SEA adoption. Contextual issues can be particularly pronounced in developing countries, which often grapple with institutional practices incompatible with good governance, vested interests, mistrust, and a history of unfulfilled policy promises. Conversely, some developed countries might treat SEA as a formality rather than a tool for informing plans.' },
+                    { title: 'Procedural Effectiveness', icon: '🔄', content: 'Focuses on how the SEA process is conducted and its quality, including data sufficiency, adequacy of scoping, and consideration of alternatives. It evaluates whether the SEA process complies with relevant legislation and principles, whether the SEA is proportionate to the significance of the plan\'s potential environmental effects, and if technical information in SEA reports is complete and adequate to inform planning decisions.<br><br><b>Influencing Factors:</b> Common problems include data quality and scale limitations, insufficient or absent consideration of alternatives, overly broad assessments failing to focus on key issues, inadequate consideration of impacts beyond the plan area, and lack of spatial analysis in spatial planning. SEA initiated too late in the planning process, after key decisions have already been made, severely limits its ability to influence strategic direction and explore genuine alternatives; this disconnect from the planning cycle is an ongoing issue. The scope of alternative assessment is often limited, due to narrow objectives or focus on project-type alternatives rather than strategic ones, with many alternatives excluded as "unreasonable" or politically unacceptable. Data challenges include quality, scale limitations, scattered datasets, and insufficient strategic-level data, which can lead to biased assessments.' },
+                    { title: 'Pluralistic Effectiveness', icon: '👥', content: 'Measures the breadth and depth of involvement of different stakeholders (public, statutory consultation bodies) in the SEA process, their satisfaction with participation, and the integration of different value systems and perspectives. It emphasizes communication, dialogue, and empowerment.<br><br><b>Influencing Factors:</b> Ideally, SEA should facilitate proactive two-way communication and adequate stakeholder participation, but this is often challenging and costly. More inclusive approaches can better integrate stakeholder insights and increase knowledge and learning. The required level of participation varies with the decision; clear and uncontroversial plans require less participation than uncertain or contested ones. SEA can foster democratization and power redistribution by providing new, legitimate avenues for participation. However, planners might restrict participation to protect vested interests, and techniques can be manipulated to limit opportunities for vulnerable groups. In practice, public participation in SEA is often limited, with one-way information provision more common than genuine two-way communication.' },
+                    { title: 'Substantive Effectiveness', icon: '🌳', content: 'Assesses whether SEA genuinely had a positive impact on the final plan or policy, leading to environmental improvements, risk avoidance, or optimized spatial arrangements, or improvements to other plans, and consistency between the plan and SEA recommendations. This is the core value proposition of SEA.<br><br><b>Influencing Factors:</b> Closely linked to trade-offs between economic growth and environmental protection. A lack of national consensus on cultural values can lead to short-term thinking and political pressure overriding environmental considerations. The presentation of SEA report findings matters; extreme environmental measures are less likely to be adopted. It is difficult to distinguish changes directly attributable to SEA from those that would have occurred anyway. Substantive effectiveness may only manifest years later through individual projects. Immediate outcomes include plan influence, medium-term outcomes are more sustainable plans, and long-term outcomes are environmental or social benefits.' },
+                    { title: 'Normative Effectiveness', icon: '📜', content: 'Examines whether the plan complies with higher-level policies and regulations, international conventions, and universally accepted societal values (e.g., environmental justice, intergenerational equity).<br><br><b>Influencing Factors:</b> There is debate about whether norms should reflect societal consensus or fixed principles like sustainability. Normative criteria include long-term socio-ecological integrity, sufficiency of livelihoods, intergenerational and intra-generational equity, resource maintenance, democratic governance, prevention, and adaptation. While concepts like intergenerational and intra-generational equity are important, practical difficulties arise in applying them in plans and SEAs.' },
+                    { title: 'Knowledge & Learning', icon: '🧠', content: 'Refers to the knowledge gained and learning achieved by all stakeholders through conducting SEA, which can enhance their long-term understanding of environmental issues, change underlying perspectives, identify data gaps, and build capacity for environmental governance.<br><br><b>Influencing Factors:</b> Requires conscious reflection on what is learned and its application to future planning and SEA. Direct learning involves decision-makers integrating environmental concerns into planning. Indirect learning involves anticipating that SEA will lead to greener decisions or provide new ideas for subsequent decision rounds. Single-loop learning addresses problems within existing objectives and frameworks. Double-loop (transformative) learning questions and changes the way decisions are made and their underlying assumptions. Highly politicized environments or corruption can hinder learning. Planners can also learn to circumvent SEA requirements or conduct superficial "tick-box" SEAs.' },
+                    { title: 'Transactional Effectiveness', icon: '💰', content: 'Covers the costs and benefits of SEA, its efficiency, and cost-effectiveness.<br><br><b>Influencing Factors:</b> SEA incurs short-term costs for preparation, consultation, implementing changes, and defending against legal challenges. There are also costs for the public, statutory bodies, and developers. Often, only the cost of preparing SEA reports is quantified (around 10% of planning costs, less than 1% of implementation costs). SEA has the potential to yield significant benefits by avoiding environmental and social costs, increasing gains, reducing vulnerability to challenges, and improving knowledge and inter-institutional cooperation. These benefits are often not quantified or monetized but can outweigh the costs. Cost minimization is achieved through good scoping, easily accessible data, shared costs/data in supportive contexts, and enhanced in-house SEA capacity. A lack of systematic cost reporting hinders comprehensive evaluation of transactional effectiveness.' }
+                ]
+            },
+            cases: {
+                title: 'IV. Global Application Cases',
+                introduction: 'Strategic Environmental Assessment has been applied in over 60 countries and regions worldwide, covering diverse sectors such as energy, transport, water resources, and urban planning. This section compiles typical cases mentioned in the handbook. You can use the filters above to sort by "Country/Region" or "Application Sector" to explore specific SEA practices in different contexts. Click on a card for case details.',
+                filters: {
+                    countries: ['All', 'Germany', 'Portugal', 'Chile', 'Ireland', 'Italy', 'Sweden', 'Myanmar', 'EU', 'UK', 'Canada', 'USA', 'Australia', 'New Zealand', 'South Africa', 'Brazil', 'India', 'Thailand'],
+                    sectors: ['All', 'Transport', 'Energy', 'Water', 'Spatial Planning', 'Policy', 'Marine Planning', 'Fisheries', 'Health', 'Mining', 'Tourism', 'Conservation', 'Climate Policy', 'Resource Management', 'Land Use']
+                },
+                items: [
+                    { country: 'Germany', sector: 'Transport', title: 'Federal Transport Infrastructure Plan (FTIP)', content: '<b>Level:</b> Federal. <b>Sector:</b> Transport. <b>Approach:</b> EIA-like "program SEA." <b>Details:</b> Covers over 2100 project proposals, assessing environmental impacts (e.g., Natura 2000 areas, floodplains) and cost-effectiveness. Includes environmental soundness review, individual project assessment, and overall program assessment. <b>Outcomes:</b> Project prioritization; acknowledgement of existing but unresolved policy-level gaps. This case highlights a pragmatic and transparent EIA-like approach for large infrastructure planning.' },
+                    { country: 'Germany', sector: 'Energy', title: 'Federal Transmission Grid Demand Plan', content: '<b>Level:</b> Federal. <b>Sector:</b> Energy. <b>Approach:</b> Multi-project approach. <b>Details:</b> Conducted "hotspot" analysis and reviewed macro-siting alternatives. <b>Outcomes:</b> Project worksheets detailing assessment results; recent introduction of an SEA monitoring concept based on project-level monitoring, feeding back into SEA.' },
+                    { country: 'Germany', sector: 'Water', title: 'Elbe River Flood Risk Management Plan', content: '<b>Level:</b> Federal. <b>Sector:</b> Water. <b>Approach:</b> Assessed flood risk management measures, analyzing environmental impacts of each measure and cumulative impacts across spatial aggregation levels. <b>Outcomes:</b> Used causal matrices; the abstract nature of the plan limited alternative assessment at this tier, highlighting the need for alternative assessment at subsequent tiers.' },
+                    { country: 'Portugal', sector: 'Spatial Planning', title: 'Sintra Municipal Master Plan', content: '<b>Level:</b> Municipal. <b>Sector:</b> Spatial Planning. <b>Approach:</b> Exemplifies "policy assessment-like SEA" driven by "Strategic Thinking for Sustainability" (ST4S). <b>Details:</b> Fully integrated with the planning process from the outset, fostering collaborative stakeholder participation. <b>Outcomes:</b> Redefined master plan\'s strategic objectives to strengthen environmental considerations (e.g., ecosystem services, cultural identity); served as an early warning for strategic risks. This case showcases the power of integrated, collaborative SEA.' },
+                    { country: 'Chile', sector: 'Energy', title: 'National Energy Policy SEA', content: '<b>Level:</b> National. <b>Sector:</b> Energy. <b>Approach:</b> Policy assessment-like SEA. <b>Details:</b> Facilitated energy strategy formulation by integrating environmental, production, social, and territorial aspects. Focused on key development issues with a long-term perspective. <b>Outcomes:</b> Identified critical themes (key decision factors) and assessed opportunities/risks of strategic decisions (e.g., emission reduction, energy poverty, climate change adaptation); significantly enhanced stakeholder participation.' },
+                    { country: 'Chile', sector: 'Urban/Territorial Planning', title: 'Law 20.417 (2010) & SEA Regulation (2015)', content: '<b>Level:</b> National. <b>Sector:</b> Urban/Territorial Planning. <b>Details:</b> Law 20.417 introduced the SEA concept as a strategic model. The 2015 SEA Regulation specified procedures and deadlines. <b>Outcomes:</b> Made SEA mandatory for urban/territorial plans, clarifying scope. However, the regulation introduced a rigid procedural validation model, distorting its strategic nature and leading to "procedural dysfunctionality" and a focus on formal compliance by the Environment Ministry as a validation body.' },
+                    { country: 'Ireland', sector: 'Spatial Planning', title: 'Environmental Sensitivity Mapping (ESM) Web Tool', content: '<b>Level:</b> General Application. <b>Sector:</b> Planning Support. <b>Approach:</b> GIS-based SEA. <b>Details:</b> Centralizes access to over 100 public datasets, allowing users to create plan-specific sensitivity maps with user-defined weights. <b>Outcomes:</b> Promoted consistency, transparency, and informed decision-making regarding suitable development locations, showcasing the strength of GIS-based approaches in SEA. Example: Used in Blessington Local Area Plan SEA, where GIS screening identified key environmental issues, leading to mandatory SEA.' },
+                    { country: 'Italy', sector: 'Spatial Planning', title: 'Urban Plan of Ponte San Pietro Municipality', content: '<b>Level:</b> Local. <b>Sector:</b> Spatial Planning. <b>Approach:</b> GIS-based SEA. <b>Details:</b> GIS used extensively in the scoping phase to identify challenges, formulate suggestions, and select spatial indicators, facilitating public discussion. <b>Outcomes:</b> Improved transparency and stakeholder engagement through spatial visualization.' },
+                    { country: 'Italy', sector: 'Land Use', title: 'Cumulative Effects Assessment in Lombardy Region', content: '<b>Level:</b> Regional. <b>Sector:</b> Land Use. <b>Approach:</b> GIS-based SEA. <b>Details:</b> Simulated zoning options to compare land-use transformation impacts on environmental performance. <b>Outcomes:</b> Examined changes in spatially explicit indicators (e.g., surface runoff, landscape fragmentation), providing insights into cumulative environmental changes.' },
+                    { country: 'Sweden', sector: 'Transport', title: 'National Transport Plan 2018-29', content: '<b>Level:</b> National. <b>Sector:</b> Transport. <b>Approach:</b> Objective-led and Systemic SEA. <b>Details:</b> Developed four CO2 reduction scenarios as strategic options, with close integration of the SEA team with the national transport planning team. <b>Outcomes:</b> Demonstrated how SEA integrates across multiple governance levels (national, regional, and municipal) in a complex transport planning process.' },
+                    { country: 'Sweden', sector: 'Policy', title: 'Official Transport Infrastructure Planning Process', content: '<b>Level:</b> National, Regional, Municipal. <b>Sector:</b> Cross-sectoral (focused on Transport). <b>Approach:</b> Systemic SEA. <b>Details:</b> Illustrates complex transport planning where SEA is integrated at national, regional, and municipal levels, depicting institutions, plans, and decisions across different governance tiers. <b>Outcomes:</b> Highlights how SEA functions as a comprehensive system, emphasizing coordination of objectives and actions across administrative levels and sectors.' },
+                    { country: 'Myanmar', sector: 'Energy', title: 'Hydropower Sector Framework', content: '<b>Level:</b> National. <b>Sector:</b> Hydropower. <b>Approach:</b> Systemic SEA. <b>Details:</b> Merged SEA with the development process of a Sustainable Development Framework (SDF). <b>Outcomes:</b> The SDF balanced hydropower development with environmental and social functions and established a tiering approach for further assessment at sub-SEA levels.' },
+                    { country: 'EU', sector: 'Cross-sectoral Policy', title: 'ESPON EATIA Project', content: '<b>Level:</b> EU. <b>Sector:</b> Cross-sectoral Policy. <b>Approach:</b> Territorial Impact Assessment (TIA). <b>Details:</b> Tested the effectiveness of regional/local stakeholder involvement in predicting EU policy impacts, developing a participatory approach including "learning networks." Used checklists, logical chains, and impact matrices. <b>Outcomes:</b> Simple and straightforward for experienced assessors; identified potential impacts on regions based on directives (e.g., Habitat Directive in Slovenia).' },
+                    { country: 'EU', sector: 'Cross-border Spatial Development', title: 'EU Cross-Border Cooperation Projects', content: '<b>Level:</b> EU. <b>Sector:</b> Cross-border Spatial Development. <b>Approach:</b> Territorial Impact Assessment (TIA). <b>Details:</b> Assessed the effectiveness of funding measures to improve socio-economic, health, and environmental conditions in five EU cross-border regions. <b>Outcomes:</b> Used intervention logic and an Impact Assessment Matrix (IAM) combining quantitative and qualitative data; highlighted the role of local decision-makers in indicator creation and the effectiveness of combining data with expert opinion.' },
+                    { country: 'UK', sector: 'Spatial Planning', title: 'Local Planning in the UK (Objective-led)', content: '<b>Level:</b> Local. <b>Sector:</b> Spatial Planning. <b>Approach:</b> Objective-led SEA. <b>Details:</b> Draft plans are often tested against a series of sustainability objectives. <b>Outcomes:</b> Provides a structured framework for assessing plan performance against sustainability goals, though can be limited by vague objectives or leading to marginal changes rather than fundamental shifts.' },
+                    { country: 'UK', sector: 'Health', title: 'The London Plan (2019)', content: '<b>Level:</b> Regional. <b>Sector:</b> Spatial Development Strategy / Health. <b>Approach:</b> Integrates health factors into regional planning. <b>Details:</b> Adopted the most comprehensive approach to health policy, aiming to create healthy cities. <b>Outcomes:</b> Included a health inequalities strategy and provisions for community safety impact assessments, demonstrating SEA\'s potential in integrating cross-cutting issues like public health into strategic planning.' },
+                    { country: 'UK', sector: 'Water', title: 'Shetland Islands Regional Marine Plan', content: '<b>Level:</b> Regional. <b>Sector:</b> Marine Planning. <b>Approach:</b> Combined SEA and Sustainability Assessment (SA), adopting an ecosystem services approach. <b>Outcomes:</b> Comprehensive assessment of environmental, social, cultural, and economic issues for integrated marine planning.' },
+                    { country: 'UK', sector: 'Water', title: 'Water Resources Management Plans (England)', content: '<b>Level:</b> National. <b>Sector:</b> Water Resources. <b>Approach:</b> Assessed various programs covering customer, distribution, and resource management. <b>Outcomes:</b> Adopted an integrated approach harmonized with the Water Framework Directive (WFD) assessments.' },
+                    { country: 'UK', sector: 'Spatial Planning', title: 'Central Lincolnshire Joint Local Plan 2012-36', content: '<b>Level:</b> Local. <b>Sector:</b> Spatial Planning. <b>Details:</b> Prepared jointly with the Joint Health and Wellbeing Strategy (HWS) and Joint Strategic Needs Assessment (JSNA). <b>Outcomes:</b> Included policies for reducing inequalities and provisions for Health Impact Assessment (HIA) in project development.' },
+                    { country: 'UK', sector: 'Spatial Planning', title: 'West of England Joint Spatial Plan', content: '<b>Level:</b> Regional. <b>Sector:</b> Spatial Planning. <b>Details:</b> Failed examination due to insufficient justification for strategic housing proposals. <b>Outcomes:</b> Highlighted the importance of SA/SEA in ensuring strategic soundness and robust justification for planning decisions.' },
+                    { country: 'Canada', sector: 'Conservation', title: 'Wood Buffalo National Park Strategic Environmental Assessment', content: '<b>Level:</b> Federal. <b>Sector:</b> Land Use / Conservation. <b>Details:</b> Commissioned due to concerns over cumulative impacts on the UNESCO World Heritage site. <b>Outcomes:</b> Determined expected outcomes unlikely under existing pressures; proposed 44 recommendations; facilitated the development of a collaborative action plan, demonstrating SEA\'s role in addressing complex conservation challenges.' },
+                    { country: 'Canada', sector: 'Energy', title: 'Bay of Fundy Tidal Energy', content: '<b>Level:</b> National. <b>Sector:</b> Energy Development. <b>Details:</b> Applied to high-level development scenarios for tidal devices. <b>Outcomes:</b> Recommendations guided a strategic approach to marine renewable energy, with most recommendations implemented; extensive consultation with local communities was a key success factor.' },
+                    { country: 'Canada', sector: 'Cross-sectoral', title: 'Cabinet Directive on the Environmental Assessment of Policy, Plan and Program Proposals', content: '<b>Level:</b> Federal. <b>Sector:</b> Cross-sectoral. <b>Details:</b> Requires SEA for PPP proposals likely to have important environmental effects. <b>Outcomes:</b> Mandates publication of public statements; limited impact on project-level assessments due to generic advice.' },
+                    { country: 'Canada', sector: 'Land Use/Mining', title: 'Elk Valley Regional Cumulative Effects Framework', content: '<b>Level:</b> Provincial. <b>Sector:</b> Land Use / Mining. <b>Details:</b> A multi-stakeholder initiative designed to assess and manage cumulative effects from various land uses. <b>Outcomes:</b> Explored alternative scenarios, identified impact management options, and transitioned to a key component of the provincial cumulative effects management framework.' },
+                    { country: 'Canada', sector: 'Climate Policy', title: 'Federal Climate Change Strategic Environmental Assessment', content: '<b>Level:</b> Federal. <b>Sector:</b> Climate Policy. <b>Details:</b> Draft SEA aimed to guide project-level assessments of GHG emissions and climate resilience. <b>Outcomes:</b> Provided a harmonized framework for GHG calculations; criticized for its narrow scope and missed opportunities to enhance coherence across multiple climate initiatives.' },
+                    { country: 'USA', sector: 'Fisheries', title: 'Alaska Groundfish Fisheries', content: '<b>Level:</b> National. <b>Sector:</b> Fisheries Management. <b>Details:</b> Supplemental Programmatic Environmental Impact Statement (PSEIS) prepared for fisheries management plans, establishing a new information baseline. <b>Outcomes:</b> Led to adoption of management approaches and policy objective statements; demonstrated ongoing review and update of assessment findings.' },
+                    { country: 'Australia', sector: 'Mining', title: 'BHP Billiton Pilbara Iron Ore Mining', content: '<b>Level:</b> National / Private Sector. <b>Sector:</b> Mining. <b>Details:</b> Strategic proposal for a 100-year operation, assessed and approved under the Environment Protection and Biodiversity Conservation Act (EPBC Act). <b>Outcomes:</b> Provided greater certainty for future planning, reduced assessment costs, and through offset measures, potentially achieved better environmental benefits by allowing large-scale, long-term approval.' },
+                    { country: 'Australia', sector: 'Urban Planning', title: 'Melbourne Urban Growth Strategy', content: '<b>Level:</b> State. <b>Sector:</b> Urban Planning. <b>Details:</b> Underwent strategic assessment under the EPBC Act. <b>Outcomes:</b> Expanded urban growth boundary, saving billions in subsequent project assessment costs, and protecting high-quality habitats.' },
+                    { country: 'Australia', sector: 'Marine/Heritage', title: 'Great Barrier Reef Assessment', content: '<b>Level:</b> National. <b>Sector:</b> Marine / Heritage. <b>Details:</b> Comprehensive strategic assessment of the Great Barrier Reef and coastal zone. <b>Outcomes:</b> Identified priority conservation areas and management actions to balance sustainable development and environmental protection.' },
+                    { country: 'New Zealand', sector: 'Resource Management', title: 'Resource Management Act (RMA) Section 32 Reports', content: '<b>Level:</b> National / Regional / Local. <b>Sector:</b> Resource Management. <b>Details:</b> Requires assessment of proposed policies, plans, and rules. <b>Outcomes:</b> Often focused on accountability rather than substantive assessment, leading to technical and bureaucratic reports; some reports meet SEA standards.' },
+                    { country: 'New Zealand', sector: 'Water Management', title: 'Canterbury Water Management Strategy (CWMS)', content: '<b>Level:</b> Regional. <b>Sector:</b> Water Management. <b>Details:</b> An interim Sustainability Assessment adopting collaborative governance. <b>Outcomes:</b> Moved water management onto a more sustainable footing; implementation solutions integrated into regional plans.' },
+                    { country: 'New Zealand', sector: 'Policy', title: 'Regulatory Impact Assessments (RIA) at Cabinet Level', content: '<b>Level:</b> National. <b>Sector:</b> Policy. <b>Details:</b> Evolved to include environmental/social aspects. <b>Outcomes:</b> Updated guidance and a Living Standards Framework (LSF) indicate a shift towards integrated RIA; recent national policies mandate this approach.' },
+                    { country: 'New Zealand', sector: 'Policy', title: 'Royal Commission on Genetic Modification (2001)', content: '<b>Level:</b> National. <b>Sector:</b> Policy. <b>Details:</b> Public inquiry on strategic options for genetic modification. <b>Outcomes:</b> Recommended caution; led to ongoing prohibition of genetically modified organisms (GMOs) and local communities gaining decisional powers over their local environments.' },
+                    { country: 'South Africa', sector: 'Energy', title: 'Renewable Energy Independent Power Producer Procurement Program (REI4P) SEA', content: '<b>Level:</b> National. <b>Sector:</b> Energy Program. <b>Approach:</b> Voluntary SEA. <b>Details:</b> Identified optimal development zones for wind and solar projects based on resource availability, achieving clear "tiering" with EIA to streamline processes. <b>Outcomes:</b> Achieved significant success in upstream and downstream PPP decisions, improving efficiency and reducing project assessment times by strategically guiding renewable energy site selection.' },
+                    { country: 'South Africa', sector: 'Energy', title: 'Karoo Strategic Environmental Assessment (Shale Gas)', content: '<b>Level:</b> National. <b>Sector:</b> Energy Plan. <b>Details:</b> Aimed to provide a "scientific assessment of opportunities and risks" for shale gas development; alternatives limited to project-type variations.' },
+                    { country: 'South Africa', sector: 'Cross-sectoral', title: 'Early SEA Practice (1996-2003)', content: '<b>Level:</b> Various. <b>Sector:</b> Cross-sectoral. <b>Approach:</b> Voluntary. <b>Details:</b> Gradual increase in SEA numbers. <b>Outcomes:</b> Generally failed to influence plan/program content, but highlighted policy flaws and raised sustainability awareness. SEA seemed replaced by other strategic-level environmental management tools (e.g., Environmental Management Frameworks). Early studies showed inability to define and measure sustainability.' },
+                    { country: 'Brazil', sector: 'Transport', title: 'São Paulo Metropolitan Ring Road Project', content: '<b>Level:</b> State. <b>Sector:</b> Transport. <b>Details:</b> SEA aimed to streamline project approvals, but decisions had already been made. <b>Outcomes:</b> Project reformulation to consider integrated multi-sector actions; SEA recommendations used to guide subsequent EIA, demonstrating its role in bridging strategic and project assessments despite late initiation.' },
+                    { country: 'Brazil', sector: 'Mining/Industry', title: 'Corumbá Mining and Industrial District', content: '<b>Level:</b> State. <b>Sector:</b> Mining / Industry. <b>Details:</b> SEA aimed to comply with Multilateral Development Agency (MDA) safeguard policies. <b>Outcomes:</b> Decision-makers gained understanding of alternatives; SEA report guided the planning and management of the industrial district.' },
+                    { country: 'Brazil', sector: 'Tourism', title: 'North Coast Tourism Development Plan', content: '<b>Level:</b> State. <b>Sector:</b> Tourism. <b>Details:</b> SEA promoted institutional learning through improved communication. <b>Outcomes:</b> Guided methodological procedures for other regions.' },
+                    { country: 'Brazil', sector: 'Regional Planning', title: 'Mata Branca Project (Caatinga Biome)', content: '<b>Level:</b> Regional. <b>Sector:</b> Regional Planning. <b>Details:</b> SEA supported regional planning. <b>Outcomes:</b> Recommended strategies adopted; new methods for sustainable interventions developed.' },
+                    { country: 'India', sector: 'Energy', title: 'Uttarakhand Hydropower Development Planning SEA', content: '<b>Level:</b> State. <b>Sector:</b> Energy. <b>Approach:</b> Hybrid "Cumulative Impact Assessment (CIA) assisted SEA." <b>Details:</b> Conducted for hydropower development plans in the Alaknanda and Bhagirathi river basins. <b>Outcomes:</b> Immediate changes in decisions (24 projects excluded); led to policy/regulatory changes (e.g., legislation for minimum environmental flows), highlighting its substantive effectiveness in a complex development context.' },
+                    { country: 'India', sector: 'Urban Planning', title: 'Pune Municipal Corporation (PMC) SEA', content: '<b>Level:</b> Municipal. <b>Sector:</b> Urban Planning. <b>Approach:</b> Inspired by EU SEA Directive, carried out in parallel with planning, baseline-oriented. <b>Outcomes:</b> Proactive integration of environmental considerations; enhanced stakeholder learning through training and workshops; influenced subsequent draft plans.' },
+                    { country: 'Thailand', sector: 'Spatial Development Policy', title: 'Rayong Province Development Plan SEA (2019)', content: '<b>Level:</b> Provincial. <b>Sector:</b> Spatial Development Policy. <b>Details:</b> Pilot project using a draft SEA guideline. <b>Outcomes:</b> Efforts to finalize SEA guidelines, build capacity, undertake sectoral/regional SEAs, and systematically evaluate SEA for future practice; aimed to raise awareness for national guideline revision.' },
+                     { country: 'Thailand', sector: 'Cross-sectoral', title: 'Early SEA Practices (e.g., Solid Waste Management, River Basin Management)', content: '<b>Level:</b> National/Regional. <b>Sector:</b> Cross-sectoral. <b>Details:</b> Applied to unresolved spatial and sectoral development issues. <b>Outcomes:</b> Limited implementation; assessment findings not consistently adopted; outcomes not always best practice; highlights a need for stronger legal enforcement, knowledge exchange, and addressing political influence.' },
+                    { country: 'Mozambique', sector: 'Land Use', title: 'Urban Settlement Growth in Caia', content: '<b>Level:</b> Local. <b>Sector:</b> Land Use. <b>Approach:</b> GIS-based SEA. <b>Details:</b> Simulated urban settlement growth under different spatial planning policies and population forecasts. <b>Outcomes:</b> Assessed environmental performance based on indicators like deforestation, providing quantitative insights for land management.' },
+                    { country: 'Peru', sector: 'Energy', title: 'Sustainable Energy and Bioenergy Strategic Plan', content: '<b>Level:</b> National. <b>Sector:</b> Energy Policy. <b>Approach:</b> Policy assessment-like SEA. <b>Details:</b> Evaluated various energy sources and strategic alternatives derived through scenario comparison. <b>Outcomes:</b> Informed the development of a sustainable energy strategy.' },
+                    { country: 'Uganda', sector: 'Energy', title: 'National Oil and Gas Development', content: '<b>Level:</b> National. <b>Sector:</b> Energy Plan. <b>Details:</b> Alternatives were primarily variations of proposed developments (spatial, operational models), with a narrow scope.' },
+                    { country: 'UK', sector: 'Energy', title: 'Offshore Energy Leasing/Licensing', content: '<b>Level:</b> National. <b>Sector:</b> Energy Program. <b>Details:</b> Alternatives were variations of proposed developments, constrained by national policy objectives.' },
+                    { country: 'UK', sector: 'Health', title: 'The London Plan (2019)', content: '<b>Level:</b> Regional. <b>Sector:</b> Spatial Development Strategy / Health. <b>Approach:</b> Comprehensive health policy integration. <b>Details:</b> Adopted the most comprehensive approach to health policy, aiming to create healthy cities. <b>Outcomes:</b> Included a health inequalities strategy and provisions for community safety impact assessments, demonstrating SEA\'s potential in integrating cross-cutting issues like public health into strategic planning.' },
+                    { country: 'Australia', sector: 'Water', title: 'Midlands Water Plan', content: '<b>Level:</b> State. <b>Sector:</b> Water Resource Acquisition Program. <b>Approach:</b> Strategic Impact Assessment (SIA) focusing on Matters of National Environmental Significance (MNES). <b>Outcomes:</b> Clarified scoping, but potentially excluded other important environmental themes due to narrow focus.' }
+                ]
+            },
+            challenges: {
+                title: 'V. Strategic Environmental Assessment: Challenges, Limitations, and Common Weaknesses',
+                introduction: 'While Strategic Environmental Assessment has made significant progress, it still faces numerous challenges in practice. This section will discuss the main obstacles and common weaknesses in SEA practice.',
+                tabs: [
+                    { 
+                        id: 'tab-general-challenges', 
+                        name: 'General and Overall Challenges',
+                        content: [
+                            { 
+                                title: 'Lack of Formal Legislation and Guidance', 
+                                points: [
+                                    'Many developing countries lack clear and comprehensive SEA legislation, leading to voluntary, ad-hoc, and inconsistent applications. Even where legislation exists, it can be framework-based with unclear methodological details.',
+                                    'Guidance documents are often outdated, failing to incorporate new evidence and experience, limiting their ability to reflect best practices.',
+                                    'Some guidance is too vague and superficial, failing to provide clear explanations on how to actually conduct SEA.',
+                                    'The scope of environmental matters can be limited; in some systems (e.g., Australian EPBC strategic assessments), SEA primarily focuses on specific, listed environmental matters (e.g., MNES), potentially overlooking other important environmental and social values.',
+                                    'Discretion in application: In many contexts, SEA application is discretionary, meaning it is only used when politically convenient or not at all, hindering systemic implementation.'
+                                ]
+                            },
+                            {
+                                title: 'Lack of Political Support and Commitment',
+                                points: [
+                                    'Insufficient political will and a lack of community awareness of sustainable development can slow down SEA adoption and limit its effectiveness.',
+                                    'Resistance to change and entrenched thinking: Planning formulation often features power struggles and deeply ingrained thinking, which can limit the implementation of SEA recommendations.'
+                                ]
+                            },
+                            {
+                                title: 'Difficulty in Establishing Causality and System Complexity',
+                                points: [
+                                    'It is difficult to establish direct causality between SEA application and more sustainable environmental outcomes, especially at higher strategic levels and over long timeframes.',
+                                    'SEA struggles to handle the inherent complexity and uncertainty of socio-ecological systems, making it difficult to predict future impacts and manage risks.'
+                                ]
+                            },
+                            {
+                                title: 'Silo Mentality and Ineffective Science-Policy Interface',
+                                points: [
+                                    'Difficulty in integrating the holistic concept of SEA across sectors (environment vs. other sectors).',
+                                    'Many academic ecosystem service assessments are not designed to answer specific policy or planning questions, leading them to be ignored or to provide inappropriate information.'
+                                ]
+                            },
+                            {
+                                title: 'Lack of Central Registries/Databases and Limited Research',
+                                points: [
+                                    'Lack of central registries for SEA cases makes it difficult to track the number of SEAs conducted and to learn from past experiences.',
+                                    'Limited comprehensive research and evaluation on SEA effectiveness, particularly in developing countries and regarding transactional effectiveness.'
+                                ]
+                            }
+                        ]
+                    },
+                    { 
+                        id: 'tab-specific-weaknesses', 
+                        name: 'Weaknesses at Specific SEA Stages/Aspects',
+                        content: [
+                            {
+                                title: 'SEA Timing',
+                                points: [
+                                    '<b>Too late initiation:</b> SEA is often initiated after key decisions have already been made, severely limiting its ability to influence strategic direction and genuinely explore alternatives. This disconnect from the planning cycle is an ongoing issue.'
+                                ]
+                            },
+                            {
+                                title: 'Consideration of Alternatives',
+                                points: [
+                                    '<b>Limited scope/narrow objectives:</b> The scope of alternative assessment is often restricted due to narrow objectives, focusing on project-type variations rather than strategic alternatives.',
+                                    '<b>Inconsequential alternatives:</b> Alternative development occurs too late, rendering them irrelevant to the planning process. Many alternatives are excluded as "unreasonable" or politically unacceptable.',
+                                    '<b>Lack of experience/uncertainty:</b> There is a lack of experience and uncertainty regarding the appropriate assessment of reasonable alternatives.'
+                                ]
+                            },
+                            {
+                                title: 'Data and Information',
+                                points: [
+                                    '<b>Quality/scale limitations:</b> Data quality and scale issues affect the accuracy and reliability of GIS outputs and assessments.',
+                                    '<b>Gaps/inconsistencies:</b> SEA-relevant datasets are often scattered, lacking central repositories, leading to reliance on different or inconsistent data sources and insufficient strategic-level data.'
+                                ]
+                            },
+                            {
+                                title: 'Public Participation',
+                                points: [
+                                    '<b>Limited involvement:</b> Public participation in SEA tends to be limited, often restricted to one-way information provision rather than genuine two-way communication.',
+                                    '<b>Manipulation of participation:</b> Public participation techniques can be manipulated to limit opportunities for vulnerable stakeholders.',
+                                    '<b>Lack of innovative methods:</b> There is a lack of innovative and effective public participation methods in SEA.'
+                                ]
+                            },
+                            {
+                                title: 'Monitoring and Follow-up',
+                                points: [
+                                    '<b>Implementation issues:</b> Monitoring is identified as one of the most problematic steps in SEA practice, often lacking concrete practices, clear guidelines, and resources.',
+                                    '<b>Disconnected from actual impacts:</b> Monitoring often focuses on plan implementation rather than the actual environmental impacts of the proposed plan, limiting learning.',
+                                    '<b>Funding difficulties:</b> Funding for monitoring is often difficult to secure, especially when reporting is not mandatory.'
+                                ]
+                            },
+                            {
+                                title: 'Quality Control',
+                                points: [
+                                    '<b>Lack of formal checks:</b> Some countries lack formal quality checks, making it difficult to ensure consistent SEA quality.',
+                                    '<b>Subjectivity:</b> It is difficult to identify "good cases" due to varying perceptions of quality.',
+                                    '<b>Overly precautionary/costly:</b> Concerns about legal challenges can lead to SEAs being overly precautionary, lengthy, and costly.'
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'tab-context-challenges',
+                        name: 'Challenges in Specific Contexts',
+                        content: [
+                            {
+                                title: 'Developing Countries',
+                                points: [
+                                    'Institutional practices incompatible with good governance principles, presence of vested interests and mistrust among stakeholders, and influence of aid agencies (host governments as observers).',
+                                    'Dominance of project-type EIA practices ("EIA culture") leads to SEA merely replicating EIA\'s logic and gaps.',
+                                    'Limited practice community due to fewer SEAs being conducted.'
+                                ]
+                            },
+                            {
+                                title: 'Chile',
+                                points: [
+                                    'Regulatory development of SEA distorted its initial strategic nature, introducing a rigid procedural validation model that conflicts with the ambiguity of policy/plan making. This resulted in "procedural dysfunctionality" in SEA application and a focus on formal compliance.'
+                                ]
+                            },
+                            {
+                                title: 'South Africa',
+                                points: [
+                                    'The voluntary nature of SEA led to diverse practices but also a lack of certainty and clear, agreed purposes. SEA appeared to be superseded by other similar strategic-level environmental management tools (e.g., Environmental Management Frameworks). Early research showed an inability to define and measure sustainability.'
+                                ]
+                            },
+                            {
+                                title: 'Thailand',
+                                points: [
+                                    'Lack of legal enforceability, limited knowledge exchange, political influence potentially affecting execution, and issues with accessibility and trust of SEA information.'
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            theory: {
+                title: 'VI. Strategic Environmental Assessment: Theoretical Foundations',
+                introduction: 'The practice of Strategic Environmental Assessment is rooted in different philosophical schools of thought and continuously develops its theoretical foundations. Understanding these theories helps us grasp the essence of SEA and apply it more effectively in various decision-making contexts.',
+                sections: [
+                    {
+                        title: 'A. Philosophical Paradigms Influencing SEA',
+                        type: 'columns',
+                        items: [
+                            { 
+                                title: 'Modernism/Rationalism',
+                                content: 'Dominant in IA discussions from its inception to the early 1970s/80s, this paradigm views decision-making as a rational, linear process aimed at producing optimal outcomes. This paradigm underlies the procedural steps in the EU SEA Directive and many global SEA procedures. Its limitation lies in unrealistically assuming decisions are always purely rational and based on a comprehensive assessment of all alternatives.'
+                            },
+                            { 
+                                title: 'Postmodernism',
+                                content: 'Emerged in the 1980s, critiquing purely rational methods. It recognizes that policy decisions are not always rational, nor are procedural frameworks strictly adhered to. It advocates for communicative planning based on equal dialogue in "ideal speech situations." While effective in low-conflict situations, its questioning of factual existence can undermine evidence-based decision support tools like SEA. Power dynamics often limit true "power-free" communication spaces.'
+                            },
+                            { 
+                                title: 'Post-factualism/Post-truth',
+                                content: 'An extreme extension of postmodernism, where facts are non-existent and people are indifferent to them, prioritizing emotional resonance over facts and evidence. This directly contradicts the core values and principles of IA—informed, evidence-based decision-making, transparency, and inclusivity—posing a significant threat to its integrity.'
+                            },
+                            {
+                                title: 'Practical Relevance',
+                                content: 'All three philosophical paradigms offer insights for SEA, helping to understand how best to support different decision contexts. Postmodern techniques (e.g., roundtables) are suitable for slight disagreements, while structured administrative processes align with modernism. Post-factualism highlights the risk that evidence can be manipulated.'
+                            }
+                        ]
+                    },
+                    {
+                        title: 'B. Previous Attempts at Theory Building',
+                        type: 'section_content',
+                        content: `
+                            <p class="mt-2 text-gray-600">Earlier attempts to build SEA theory have drawn from policy-making models to explain how EIA/SEA influence decision-making, focusing on information processing, changing attitudes through participation, and altering established routines. Key areas explored include:</p>
+                            <ul class="mt-2 list-disc list-inside text-gray-600 space-y-2">
+                                <li><b>Explaining Influence on Decision-Making:</b> Borrowed from policy-making models (e.g., information processing, symbolic politics, organizational politics) to explain how EIA/SEA influence decisions, including focus on information processing, changing attitudes through participation, and altering established routines.</li>
+                                <li><b>Rationality in Decision-Making:</b> Explored characteristics of "real" decision processes, such as cognitive limitations, behavioral biases, ambiguity of preferences, and decisions as processes of learning and negotiation among multiple actors.</li>
+                                <li><b>Role of EIA in Decision-Making:</b> Distinguished between political and professional decision contexts and issues, suggesting different "action strategies" are needed depending on these combinations.</li>
+                                <li><b>Substantive Focus:</b> Shifted discussions from procedures to outcomes, advocating for SEA to achieve "deep" (sustainable) rather than "shallow" (unsustainable) outcomes, based on non-negotiable components of sustainability.</li>
+                                <li><b>Role of Scientific and Spatial Information:</b> Explored the role of science in assessment and the value of spatial information in SEA.</li>
+                                <li><b>Learning and Integration:</b> Emphasized the importance of learning through environmental assessment and the role of "change agents." Highlighted the importance of integrating multiple tiers, dimensions, and system levels through SEA, including coordination with other assessments.</li>
+                                <li><b>Distinction of SEA Methods:</b> Recognized fundamental differences between EIA-like (procedural, administrative) and policy assessment-like (strategic thinking, policy roots) approaches. Effectiveness can only be achieved when these approaches are considered holistically within a tiered PPP SEA system.</li>
+                            </ul>
+                            <p class="mt-4 text-gray-600">Despite these contributions, a comprehensive, unified SEA theory has yet to be fully established.</p>
+                        `
+                    },
+                    {
+                        title: 'C. Towards Strategic Environmental Assessment Theory: Introducing the "Logic of Choice"',
+                        type: 'diagram',
+                        content: 'Given the diverse contexts in which SEA is applied, a single, rigid theory is often inadequate. Therefore, the handbook proposes a concept of "A Logic of Choice," viewing it as a theoretical "skeleton" or "toolbox."'
+                    }
+                ],
+                diagram: {
+                    title: '"Logic of Choice" Conceptual Model',
+                    steps: [
+                        { 
+                            title: '1. Define the Application Context', 
+                            content: 'Defined by three core elements:<br><b>- Sector</b> (e.g., Energy, Transport)<br><b>- Administrative Level</b> (e.g., National, Regional)<br><b>- Decision Tier</b> (e.g., Policy, Plan, Program)' 
+                        },
+                        { 
+                            title: '2. Select Appropriate Tools', 
+                            content: 'Based on the specific context, choose from the toolbox:<br><b>- Process</b> (flexible vs. structured)<br><b>- Methods</b> (qualitative vs. quantitative)<br><b>- Action Strategy</b> (facilitator, coordinator, technician)' 
+                        },
+                        { 
+                            title: '3. Customize SEA Practice', 
+                            content: 'Ultimately, form a customized SEA application solution that best fits the current decision-making needs, thereby maximizing its effectiveness.' 
+                        }
+                    ]
+                }
+            },
+            conclusion: {
+                title: 'VII. Conclusion and Future Outlook',
+                introduction: 'SEA has matured significantly over the past three decades, with its global application rapidly increasing. It has evolved as a decision support tool aimed at fostering sustainable development and informed decision-making. This final section synthesizes key learnings and provides recommendations for future improvements.',
+                sections: [
+                    {
+                        title: 'A. Synthesis of Key Learnings',
+                        points: [
+                            '<b>Maturity and Evolution:</b> SEA practice has matured significantly over the past three decades, with its global application rapidly increasing and becoming a recognized professional field. This evolution has driven SEA\'s development as a decision support tool.',
+                            '<b>Dual Nature:</b> SEA is both a "science" (generating evidence, informed decision-making) and an "art" (good governance). Its multi- and interdisciplinary nature provides a unique framework for knowledge and practice in environmental sustainability.',
+                            '<b>Framework Beyond Procedures:</b> While often legislated as a procedural step for PPPs, SEA is a broader framework covering different decision tiers where environmental impacts, specific issues, and alternatives are systematically addressed.',
+                            '<b>Application Patterns:</b> Applied proactively (ex-ante) before implementation to assess impacts and enhance outcomes, with associated monitoring requirements. Occasionally used reactively (ex-post) to audit outcomes. It can also be used in the absence of a specific PPP to establish strategic development objectives or address pending issues related to ecosystems, water, and other resource management.',
+                            '<b>Context Adaptation:</b> Applicable across various administrative levels—transnational, national, regional, local, and community—with time scales shifting from long-term (policy) to shorter-term (plans/programs). The questions addressed (policy-level "why/what," plan-level "how/where," program-level "where/when") and action strategies (coordinator, facilitator, technician) adjust to the decision tier.',
+                            '<b>Scope of Issues:</b> Focuses on biophysical issues (fauna, flora, air, water, soil, human beings) and landscapes, but should also integrate social issues and human health.',
+                            '<b>Methodological Diversity and Tiering:</b> Employs quantitative and qualitative approaches. Methodologies show similarities across tiers within specific sectoral applications. SEA should always be tiered with project EIA and linked to other decision levels to coordinate objectives and actions.'
+                        ]
+                    },
+                    {
+                        title: 'B. Future Outlook and Recommendations for Improvement',
+                        points: [
+                            '<b>Addressing Global Challenges:</b> SEA is more relevant than ever in addressing global environmental challenges like climate change and biodiversity loss, especially after the "breathing space" afforded to nature during the COVID-19 crisis.',
+                            '<b>Refuting Misconceptions:</b> Criticisms that SEA/EIA slow down development are false. These tools prevent delays by identifying and mitigating potential issues early, fostering public debate, and driving optimal solutions. Removing them risks exacerbating problems and inviting opposition.',
+                            '<b>Embracing Core Values:</b> SEA is built on values of transparency, credibility, accountability, and informed implementation, aiming for environmentally sustainable and acceptable decisions based on scientific evidence and societal values.',
+                            '<b>Continuous Improvement:</b>',
+                            '<ul>',
+                            '<li><b>Strengthen Legal Frameworks:</b> Ensure roles and responsibilities of all actors and administrative bodies are clear.</li>',
+                            '<li><b>Develop Tailored Guidance:</b> Create flexible, practical, and continuously updated national guidance, tested and refined collaboratively with stakeholders.</li>',
+                            '<li><b>Enhance Public Participation:</b> Foster early, continuous, and innovative public participation through novel communication methods and technologies (e.g., online platforms). Stakeholder analysis helps establish effective public participation options.</li>',
+                            '<li><b>Improve Quality Control:</b> Implement both formal (independent review, expert certification) and informal (training, knowledge exchange platforms) quality control measures.</li>',
+                            '<li><b>Strengthen Monitoring and Follow-up:</b> Develop clear guidelines and legal requirements for monitoring the environmental effects of plans (not just implementation), and prioritize resources for monitoring.</li>',
+                            '<li><b>Promote Interaction and Collaboration:</b> Facilitate interaction among different actors through knowledge exchange platforms, interactive workshops, and roundtables to build consensus.</li>',
+                            '<li><b>Promote Early Application of SEA:</b> Increase awareness of SEA as a useful decision-making tool, encourage its early application in the planning process, and document success stories.</li>',
+                            '<li><b>Address Data Gaps:</b> Prioritize addressing spatial data gaps and deficiencies, ensuring data accuracy, completeness, and accessibility, and leverage GIS/modeling tools for future scenario simulation.</li>',
+                            '<li><b>Integrate Climate Change:</b> Ensure plans reduce greenhouse gas emissions and are resilient to anticipated climate change, developing specific objectives and indicators.</li>',
+                            '<li><b>Refine Alternatives Assessment:</b> Improve assessment by considering a reasonable range of strategic alternatives.</li>',
+                            '<li><b>Clarify SEA Positioning:</b> Clearly define SEA\'s purpose and positioning to avoid confusion with other environmental management tools.</li>',
+                            '<li><b>Invest in Capacity Building:</b> Provide comprehensive training and capacity building programs for SEA practitioners and relevant institutions.</li>',
+                            '<li><b>Encourage Research:</b> Support research targeting specific domain areas and technical challenges, and integrate relevant research findings into SEA practice and guidance.</li>',
+                            '<li><b>Adopt "Logic of Choice":</b> Develop a theory based on this concept to guide practitioners in selecting appropriate processes and methods according to specific applications.</li>',
+                            '</ul>'
+                        ]
+                    }
+                ]
+            }
+        };
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainNav = document.getElementById('main-nav');
+            const contentSections = document.querySelectorAll('.content-section');
+            const caseModal = document.getElementById('case-modal');
+            const caseModalContent = document.getElementById('case-modal-content');
+
+            function navigate(hash) {
+                if (!hash) hash = '#introduction'; // Default to introduction
+                
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                    if (`#${section.id}` === hash) {
+                        section.classList.add('active');
+                    }
+                });
+
+                mainNav.querySelectorAll('a').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === hash) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            mainNav.addEventListener('click', (e) => {
+                const link = e.target.closest('a');
+                if (link) {
+                    e.preventDefault();
+                    const hash = link.getAttribute('href');
+                    window.location.hash = hash;
+                }
+            });
+            
+            window.addEventListener('hashchange', () => navigate(window.location.hash));
+            
+            caseModal.addEventListener('click', (e) => {
+                if (e.target === caseModal) {
+                    caseModal.style.display = 'none';
+                }
+            });
+
+            function renderIntroduction() {
+                const data = AppData.introduction;
+                const container = document.getElementById('introduction');
+                let html = `<h2 class="text-3xl font-bold text-gray-800">${data.title}</h2><p class="mt-2 text-lg text-gray-600">${data.introduction}</p><div class="mt-8 space-y-8">`;
+                data.sections.forEach(sec => {
+                    html += `<div class="p-6 bg-white rounded-lg shadow-sm">
+                                <h3 class="text-xl font-semibold text-gray-800">${sec.title}</h3>
+                                <p class="mt-2 text-gray-600">${sec.content}</p>
+                             </div>`;
+                });
+                html += `</div>`;
+                container.innerHTML = html;
+            }
+
+            function renderMethodologies() {
+                const data = AppData.methodologies;
+                const container = document.getElementById('methodologies');
+
+                let tabsHtml = `<div class="flex flex-wrap gap-2 mb-6 border-b border-gray-200">`;
+                data.methodologies.forEach((method, index) => {
+                    tabsHtml += `<button data-tab="${method.id}" class="tab-button px-4 py-2 text-sm font-medium text-gray-700 bg-white border-b-2 border-transparent rounded-t-lg hover:text-gray-800 hover:border-gray-300 ${index === 0 ? 'active' : ''}">${method.name}</button>`;
+                });
+                tabsHtml += `</div>`;
+                
+                let contentHtml = '';
+                data.methodologies.forEach((method, index) => {
+                    contentHtml += `<div id="${method.id}" class="method-content p-6 bg-white rounded-lg shadow-sm ${index > 0 ? 'hidden' : ''}">
+                                        <h3 class="text-xl font-semibold text-gray-800">${method.name}</h3>
+                                        <p class="mt-2 text-gray-600">${method.description}</p>
+                                        <div class="mt-4 grid md:grid-cols-2 gap-4">
+                                            <div>
+                                                <h4 class="font-semibold text-gray-700">Features:</h4>
+                                                <ul class="mt-2 list-disc list-inside text-gray-600 space-y-1">
+                                                    ${method.features.map(f => `<li>${f}</li>`).join('')}
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-semibold text-gray-700">Limitations:</h4>
+                                                <ul class="mt-2 list-disc list-inside text-gray-600 space-y-1">
+                                                    ${method.limitations.map(l => `<li>${l}</li>`).join('')}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4 pt-4 border-t border-gray-200">
+                                            <p class="text-sm text-gray-800"><b>Case Example:</b> ${method.case_example}</p>
+                                        </div>
+                                    </div>`;
+                });
+
+                container.innerHTML = `<h2 class="text-3xl font-bold text-gray-800">${data.title}</h2>
+                                       <p class="mt-2 text-lg text-gray-600">${data.introduction}</p>
+                                       <div class="mt-8 p-6 bg-white rounded-lg shadow-sm">
+                                            <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">Methodology Comparison</h3>
+                                            <div class="chart-container"><canvas id="methodsChart"></canvas></div>
+                                       </div>
+                                       <div class="mt-8">
+                                            ${tabsHtml}
+                                            ${contentHtml}
+                                       </div>`;
+                
+                new Chart(document.getElementById('methodsChart').getContext('2d'), {
+                    type: 'bar',
+                    data: data.chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true, max: 10 } },
+                        plugins: { legend: { position: 'top' } }
+                    }
+                });
+
+                container.querySelector('.tab-button').parentElement.addEventListener('click', e => {
+                    if(e.target.tagName === 'BUTTON') {
+                        const tabId = e.target.dataset.tab;
+                        container.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+                        container.querySelectorAll('.method-content').forEach(content => content.classList.add('hidden'));
+                        document.getElementById(tabId).classList.remove('hidden');
+                    }
+                });
+            }
+
+            function renderEffectiveness() {
+                const data = AppData.effectiveness;
+                const container = document.getElementById('effectiveness');
+                
+                let cardsHtml = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">';
+                data.dimensions.forEach(dim => {
+                    cardsHtml += `<div class="p-6 bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300">
+                                    <div class="text-4xl mb-3">${dim.icon}</div>
+                                    <h3 class="text-xl font-semibold text-gray-800">${dim.title}</h3>
+                                    <p class="mt-2 text-gray-600">${dim.content}</p>
+                                  </div>`;
+                });
+                cardsHtml += '</div>';
+
+                container.innerHTML = `<h2 class="text-3xl font-bold text-gray-800">${data.title}</h2>
+                                       <p class="mt-2 text-lg text-gray-600">${data.introduction}</p>
+                                       <div class="mt-8 p-6 bg-white rounded-lg shadow-sm">
+                                            <div class="chart-container"><canvas id="effectivenessChart"></canvas></div>
+                                       </div>
+                                       <div class="mt-8">${cardsHtml}</div>`;
+
+                new Chart(document.getElementById('effectivenessChart').getContext('2d'), {
+                    type: 'radar',
+                    data: data.chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        elements: { line: { borderWidth: 3 } },
+                        scales: { r: { angleLines: { display: true }, suggestedMin: 0, suggestedMax: 10 } }
+                    }
+                });
+            }
+
+            function renderCases() {
+                const data = AppData.cases;
+                const container = document.getElementById('cases');
+
+                let filtersHtml = `<div class="flex flex-wrap gap-4 mb-6 p-4 bg-white rounded-lg shadow-sm">
+                                    <div>
+                                        <label for="country-filter" class="block text-sm font-medium text-gray-700">Country/Region:</label>
+                                        <select id="country-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                            ${data.filters.countries.map(c => `<option value="${c}">${c}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="sector-filter" class="block text-sm font-medium text-gray-700">Application Sector:</label>
+                                        <select id="sector-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                            ${data.filters.sectors.map(s => `<option value="${s}">${s}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                   </div>`;
+
+                let cardsHtml = '<div id="cases-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">';
+                data.items.forEach((item, index) => {
+                    cardsHtml += `<div class="case-card bg-white rounded-lg shadow-sm p-6 flex flex-col cursor-pointer hover:shadow-xl transition-shadow duration-300" 
+                                      data-country="${item.country}" data-sector="${item.sector}" data-index="${index}">
+                                    <h4 class="text-lg font-bold text-gray-800">${item.title}</h4>
+                                    <div class="mt-2 flex-grow">
+                                        <p class="text-sm text-gray-600">${item.content.substring(0,100)}...</p>
+                                    </div>
+                                    <div class="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500 flex justify-between">
+                                        <span>${item.country}</span>
+                                        <span>${item.sector}</span>
+                                    </div>
+                                 </div>`;
+                });
+                cardsHtml += '</div>';
+
+                container.innerHTML = `<h2 class="text-3xl font-bold text-gray-800">${data.title}</h2>
+                                       <p class="mt-2 text-lg text-gray-600">${data.introduction}</p>
+                                       <div class="mt-8">${filtersHtml}${cardsHtml}</div>`;
+                
+                const countryFilter = document.getElementById('country-filter');
+                const sectorFilter = document.getElementById('sector-filter');
+                const casesGrid = document.getElementById('cases-grid');
+
+                function filterCases() {
+                    const selectedCountry = countryFilter.value;
+                    const selectedSector = sectorFilter.value;
+                    document.querySelectorAll('.case-card').forEach(card => {
+                        const cardCountry = card.dataset.country;
+                        const cardSector = card.dataset.sector;
+                        const showCountry = selectedCountry === 'All' || cardCountry === selectedCountry;
+                        const showSector = selectedSector === 'All' || cardSector === selectedSector;
+                        card.style.display = (showCountry && showSector) ? 'flex' : 'none';
+                    });
+                }
+
+                countryFilter.addEventListener('change', filterCases);
+                sectorFilter.addEventListener('change', filterCases);
+                
+                casesGrid.addEventListener('click', e => {
+                    const card = e.target.closest('.case-card');
+                    if (card) {
+                        const item = AppData.cases.items[card.dataset.index];
+                        caseModalContent.innerHTML = `
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">${item.title}</h3>
+                            <div class="mb-4 text-sm text-gray-500">
+                                <span class="font-semibold">Country/Region:</span> ${item.country} | <span class="font-semibold">Application Sector:</span> ${item.sector}
+                            </div>
+                            <p class="text-gray-700 whitespace-pre-wrap">${item.content}</p>
+                            <button id="close-modal" class="mt-6 px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800">Close</button>
+                        `;
+                        caseModal.style.display = 'flex';
+                        document.getElementById('close-modal').onclick = () => {
+                            caseModal.style.display = 'none';
+                        };
+                    }
+                });
+            }
+            
+            function renderChallenges() {
+                const data = AppData.challenges;
+                const container = document.getElementById('challenges');
+                 let tabsHtml = `<div class="flex flex-wrap gap-2 mb-6 border-b border-gray-200">`;
+                data.tabs.forEach((tab, index) => {
+                    tabsHtml += `<button data-tab="${tab.id}" class="tab-button px-4 py-2 text-sm font-medium text-gray-700 bg-white border-b-2 border-transparent rounded-t-lg hover:text-gray-800 hover:border-gray-300 ${index === 0 ? 'active' : ''}">${tab.name}</button>`;
+                });
+                tabsHtml += `</div>`;
+
+                let contentHtml = '';
+                data.tabs.forEach((tab, index) => {
+                    let tabContent = '';
+                    tab.content.forEach(sec => {
+                        tabContent += `<div class="mb-6">
+                                          <h4 class="text-xl font-semibold text-gray-700">${sec.title}</h4>
+                                          <ul class="mt-2 list-disc list-inside text-gray-600 space-y-2">
+                                            ${sec.points.map(p => `<li>${p}</li>`).join('')}
+                                          </ul>
+                                      </div>`;
+                    });
+                    contentHtml += `<div id="${tab.id}" class="challenge-content p-6 bg-white rounded-lg shadow-sm ${index > 0 ? 'hidden' : ''}">${tabContent}</div>`;
+                });
+
+                container.innerHTML = `<h2 class="text-3xl font-bold text-gray-800">${data.title}</h2>
+                                       <p class="mt-2 text-lg text-gray-600">${data.introduction}</p>
+                                       <div class="mt-8">${tabsHtml}${contentHtml}</div>`;
+                
+                container.querySelector('.tab-button').parentElement.addEventListener('click', e => {
+                    if(e.target.tagName === 'BUTTON') {
+                        const tabId = e.target.dataset.tab;
+                        container.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+                        container.querySelectorAll('.challenge-content').forEach(content => content.classList.add('hidden'));
+                        document.getElementById(tabId).classList.remove('hidden');
+                    }
+                });
+            }
+
+            function renderTheory() {
+                const data = AppData.theory;
+                const container = document.getElementById('theory');
+                
+                let html = `<h2 class="text-3xl font-bold text-gray-800">${data.title}</h2>
+                            <p class="mt-2 text-lg text-gray-600">${data.introduction}</p>`;
+
+                data.sections.forEach(section => {
+                    html += `<div class="mt-8 p-6 bg-white rounded-lg shadow-sm">
+                                <h3 class="text-2xl font-semibold text-gray-800 mb-4">${section.title}</h3>`;
+                    if (section.type === 'columns') {
+                        html += `<div class="grid md:grid-cols-3 gap-6">`;
+                        section.items.forEach(item => {
+                            html += `<div>
+                                        <h4 class="font-bold text-lg text-gray-700">${item.title}</h4>
+                                        <p class="mt-2 text-gray-600">${item.content}</p>
+                                     </div>`;
+                        });
+                        html += `</div>`;
+                    } else if (section.type === 'diagram') {
+                         html += `<p class="text-gray-600">${section.content}</p>`;
+                    } else if (section.type === 'section_content') {
+                        html += section.content; // Render pre-formatted HTML content
+                    }
+                    html += `</div>`;
+                });
+
+                // Render diagram
+                 html += `<div class="mt-8 p-6 bg-white rounded-lg shadow-sm">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-4">${data.diagram.title}</h3>
+                            <div class="flex flex-col md:flex-row items-center justify-around gap-4 text-center">`;
+                data.diagram.steps.forEach((step, index) => {
+                     html += `<div class="flex-1 p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                                 <h4 class="font-bold text-lg text-gray-700">${step.title}</h4>
+                                 <p class="mt-2 text-sm text-gray-600">${step.content}</p>
+                              </div>`;
+                     if (index < data.diagram.steps.length - 1) {
+                         html += `<div class="text-3xl text-gray-400 font-bold mx-4 hidden md:block">&rarr;</div>
+                                  <div class="text-3xl text-gray-400 font-bold my-4 md:hidden">&darr;</div>`;
+                     }
+                });
+                html += `</div></div>`;
+
+                container.innerHTML = html;
+            }
+
+            function renderConclusion() {
+                const data = AppData.conclusion;
+                const container = document.getElementById('conclusion');
+                
+                let html = `<h2 class="text-3xl font-bold text-gray-800">${data.title}</h2>
+                            <p class="mt-2 text-lg text-gray-600">${data.introduction}</p>`;
+
+                data.sections.forEach(section => {
+                    html += `<div class="mt-8 p-6 bg-white rounded-lg shadow-sm">
+                                <h3 class="text-2xl font-semibold text-gray-800 mb-4">${section.title}</h3>
+                                <ul class="mt-2 list-disc list-inside text-gray-600 space-y-2">
+                                    ${section.points.map(p => `<li>${p}</li>`).join('')}
+                                </ul>
+                            </div>`;
+                });
+                container.innerHTML = html;
+            }
+
+
+            // Initial Render
+            renderIntroduction();
+            renderMethodologies();
+            renderEffectiveness();
+            renderCases();
+            renderChallenges();
+            renderTheory();
+            renderConclusion();
+            
+            // Set initial view based on hash
+            navigate(window.location.hash || '#introduction');
+        });
+    </script>
+</body>
+</html>
