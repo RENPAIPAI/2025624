@@ -1,25 +1,26 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strategic Environmental Assessment Interactive Handbook </title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals & Slate Blue -->
-    <!-- Application Structure Plan: The application is designed as a single-page application (SPA) with a fixed sidebar for primary navigation and a dynamic main content area. This structure was chosen over a linear document to handle the report's density, allowing users to non-linearly explore key themes like methodologies, effectiveness, and case studies. Each navigation item reveals a distinct, self-contained module (e.g., an interactive chart-driven comparison of methodologies, a filterable grid of global case studies). This thematic, modular approach breaks down complex information into digestible chunks, promoting user-driven exploration and preventing overwhelm. Key interactions include tabbed content, filterable grids, and expandable cards, which hide detailed information until explicitly requested, ensuring a clean, high-level overview by default. -->
-    <!-- Visualization & Content Choices: 
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Strategic Environmental Assessment Interactive Handbook </title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Chosen Palette: Warm Neutrals & Slate Blue -->
+<!-- Application Structure Plan: The application is designed as a single-page application (SPA) with a fixed sidebar for primary navigation and a dynamic main content area. This structure was chosen over a linear document to handle the report's density, allowing users to non-linearly explore key themes like methodologies, effectiveness, and case studies. Each navigation item reveals a distinct, self-contained module (e.g., an interactive chart-driven comparison of methodologies, a filterable grid of global case studies). This thematic, modular approach breaks down complex information into digestible chunks, promoting user-driven exploration and preventing overwhelm. Key interactions include tabbed content, filterable grids, and expandable cards, which hide detailed information until explicitly requested, ensuring a clean, high-level overview by default. -->
+<!-- Visualization & Content Choices: 
         - Report Info: Core SEA Methodologies -> Goal: Compare -> Viz/Presentation: Interactive Tabbed Panels + Bar Chart (Chart.js) -> Interaction: User clicks tabs to switch methodology details; the bar chart provides a quantitative comparison of qualitative attributes. Justification: Simplifies comparison of multiple complex frameworks.
         - Report Info: SEA Effectiveness Dimensions -> Goal: Explain/Compare -> Viz/Presentation: Grid of clickable cards + Radar Chart (Chart.js) -> Interaction: Hovering/clicking cards reveals details for each dimension; the radar chart offers a holistic, visual summary of what balanced effectiveness looks like. Justification: Makes abstract concepts of "effectiveness" tangible and easy to grasp.
         - Report Info: Global Application Cases -> Goal: Organize/Explore -> Viz/Presentation: Filterable Grid of Cards -> Interaction: Users select filters (country, sector) to dynamically display relevant cases. Clicking a card opens a modal with details. Justification: Manages a large, text-heavy dataset, making it searchable and accessible rather than an overwhelming list.
         - Report Info: Conceptual Models (e.g., Logic of Choice) -> Goal: Explain -> Viz/Presentation: HTML/CSS Diagram -> Interaction: Static visual aid. Justification: Provides a clear visual representation of a core theoretical concept without external libraries.
         - Library/Method: All charts are rendered on <canvas> using Chart.js. All diagrams are built with semantic HTML and styled with Tailwind CSS.
     -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<style>
         body { font-family: 'Inter', sans-serif; background-color: #f8f7f4; color: #333; }
         .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
         @media (min-width: 768px) { .chart-container { height: 400px; } }
@@ -40,91 +41,93 @@
             max-width: 90vw; max-height: 90vh; overflow-y: auto; width: 60rem;
         }
     </style>
-</head>
+<style>
+main {
+    padding: 2rem 3rem; /* 上下左右留白 */
+}
+.content-section {
+    margin-bottom: 4rem;
+}
+</style><style>
+body {
+    line-height: 1.6;
+}
+</style><style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+main {
+    padding: 2rem 3rem;
+    background-color: white;
+    border-radius: 8px;
+    max-width: 1000px;
+    margin: auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.content-section {
+    margin-bottom: 4rem;
+}
+
+h2 {
+    color: #2a4b7c;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 0.4rem;
+    margin-bottom: 1.5rem;
+}
+</style></head>
 <body class="antialiased">
-
-    <div class="flex h-screen bg-gray-100">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="w-64 bg-white shadow-md flex-shrink-0">
-            <div class="p-6">
-                <h1 class="text-xl font-bold text-gray-800">Strategic Environmental Assessment</h1>
-                <p class="text-sm text-gray-500">Interactive Handbook Compiled by Ren Shijie's reading notes</p>
-            </div>
-            <nav id="main-nav" class="mt-6">
-                <a href="#introduction" class="nav-item flex items-center px-6 py-3 text-gray-700 active">
-                    <span class="mx-3">I. Introduction to SEA</span>
-                </a>
-                <a href="#methodologies" class="nav-item flex items-center px-6 py-3 text-gray-700">
-                    <span class="mx-3">II. Theoretical Foundations</span>
-                </a>
-                <a href="#effectiveness" class="nav-item flex items-center px-6 py-3 text-gray-700">
-                    <span class="mx-3">III. Core Methodologies</span>
-                </a>
-                <a href="#cases" class="nav-item flex items-center px-6 py-3 text-gray-700">
-                    <span class="mx-3">IV. Dimensions of Effectivenes</span>
-                </a>
-                <a href="#challenges" class="nav-item flex items-center px-6 py-3 text-gray-700">
-                    <span class="mx-3">V. Global Application Cases</span>
-                </a>
-                 <a href="#theory" class="nav-item flex items-center px-6 py-3 text-gray-700">
-                    <span class="mx-3">VI. Challenges & Weaknesses</span>
-                </a>
-                <a href="#conclusion" class="nav-item flex items-center px-6 py-3 text-gray-700">
-                    <span class="mx-3">VII. Conclusion & Future</span>
-                </a>
-            </nav>
-        </aside>
-
-        <!-- Main content -->
-        <main class="flex-1 overflow-y-auto bg-[#f8f7f4]">
-            <div class="p-4 md:p-8">
-                <!-- Introduction Section -->
-                <section id="introduction" class="content-section active">
-                    <!-- Content injected by JS -->
-                </section>
-
-                <!-- Methodologies Section -->
-                <section id="methodologies" class="content-section">
-                    <!-- Content injected by JS -->
-                </section>
-
-                <!-- Effectiveness Section -->
-                <section id="effectiveness" class="content-section">
-                    <!-- Content injected by JS -->
-                </section>
-                
-                <!-- Cases Section -->
-                <section id="cases" class="content-section">
-                    <!-- Content injected by JS -->
-                </section>
-                
-                <!-- Challenges Section -->
-                <section id="challenges" class="content-section">
-                     <!-- Content injected by JS -->
-                </section>
-
-                <!-- Theory Section -->
-                <section id="theory" class="content-section">
-                     <!-- Content injected by JS -->
-                </section>
-
-                <!-- Conclusion Section -->
-                <section id="conclusion" class="content-section">
-                     <!-- Content injected by JS -->
-                </section>
-            </div>
-        </main>
-    </div>
-
-    <!-- Modal for Case Studies -->
-    <div id="case-modal" class="modal-backdrop">
-        <div id="case-modal-content" class="modal-content">
-            <!-- Modal content injected by JS -->
-        </div>
-    </div>
-
-
-    <script>
+<div class="flex h-screen bg-gray-100">
+<!-- Sidebar -->
+<aside class="w-64 bg-white shadow-md flex-shrink-0" id="sidebar">
+<div class="p-6">
+<h1 class="text-xl font-bold text-gray-800">Strategic Environmental Assessment</h1>
+<p class="text-sm text-gray-500">Interactive Handbook Compiled by Ren Shijie's reading notes</p>
+</div>
+<nav class="mt-6" id="main-nav"><a class="nav-item flex items-center px-6 py-3 text-gray-700 active" href="#introduction">
+<span class="mx-3">I. Introduction to SEA</span>
+</a><a class="nav-item flex items-center px-6 py-3 text-gray-700" href="#theory">
+<span class="mx-3">II. Theoretical Foundations</span>
+</a><a class="nav-item flex items-center px-6 py-3 text-gray-700" href="#methodologies">
+<span class="mx-3">III. Core Methodologies</span>
+</a><a class="nav-item flex items-center px-6 py-3 text-gray-700" href="#effectiveness">
+<span class="mx-3">IV. Dimensions of Effectivenes</span>
+</a><a class="nav-item flex items-center px-6 py-3 text-gray-700" href="#cases">
+<span class="mx-3">V. Global Application Cases</span>
+</a><a class="nav-item flex items-center px-6 py-3 text-gray-700" href="#challenges">
+<span class="mx-3">VI. Challenges &amp; Weaknesses </span>
+</a><a class="nav-item flex items-center px-6 py-3 text-gray-700" href="#conclusion">
+<span class="mx-3">VII. Conclusion &amp; Future</span>
+</a></nav>
+</aside>
+<!-- Main content -->
+<main class="flex-1 overflow-y-auto bg-[#f8f7f4]"><section class="content-section active" id="introduction">
+<!-- Content injected by JS -->
+</section><section class="content-section" id="theory">
+<!-- Content injected by JS -->
+</section><section class="content-section" id="methodologies">
+<!-- Content injected by JS -->
+</section><section class="content-section" id="effectiveness">
+<!-- Content injected by JS -->
+</section><section class="content-section" id="cases">
+<!-- Content injected by JS -->
+</section><section class="content-section" id="challenges">
+<!-- Content injected by JS -->
+</section><section class="content-section" id="conclusion">
+<!-- Content injected by JS -->
+</section></main>
+</div>
+<!-- Modal for Case Studies -->
+<div class="modal-backdrop" id="case-modal">
+<div class="modal-content" id="case-modal-content">
+<!-- Modal content injected by JS -->
+</div>
+</div>
+<script>
         const AppData = {
             introduction: {
                 title: 'I. Welcome to the Strategic Environmental Assessment (SEA) Interactive Handbook',
@@ -146,7 +149,7 @@
                 ]
             },
             methodologies: {
-                title: 'II. Core Methodologies',
+                title: 'III. Core Methodologies',
                 introduction: 'Strategic Environmental Assessment is not a single method, but a toolbox containing various models. Different methods are applicable to different decision-making levels and contexts. This section will compare and analyze several mainstream SEA methodologies. You can click the tabs below to view detailed descriptions of different methods and use the chart to visually compare their characteristics.',
                 chartData: {
                     labels: ['EIA-like Approaches', 'Policy Assessment-like Approaches', 'Objective-led Approaches', 'GIS-based Approaches', 'Territorial Impact Assessment', 'Systemic Approaches'],
@@ -248,7 +251,7 @@
                 ]
             },
             effectiveness: {
-                title: 'III. Dimensions of Effectiveness',
+                title: 'IV Dimensions of Effectiveness',
                 introduction: 'The success of SEA is measured not just by its adherence to legal procedures, but by a multi-dimensional framework. Understanding these dimensions helps us comprehensively evaluate and improve SEA practice. The radar chart below illustrates an ideal SEA\'s balanced performance across various dimensions. Click on the cards below to delve into the specific meaning of each dimension.',
                 chartData: {
                     labels: ['Contextual Effectiveness', 'Procedural Effectiveness', 'Pluralistic Effectiveness', 'Substantive Effectiveness', 'Normative Effectiveness', 'Knowledge & Learning', 'Transactional Effectiveness'],
@@ -272,7 +275,7 @@
                 ]
             },
             cases: {
-                title: 'IV. Global Application Cases',
+                title: 'V. Global Application Cases',
                 introduction: 'Strategic Environmental Assessment has been applied in over 60 countries and regions worldwide, covering diverse sectors such as energy, transport, water resources, and urban planning. This section compiles typical cases mentioned in the handbook. You can use the filters above to sort by "Country/Region" or "Application Sector" to explore specific SEA practices in different contexts. Click on a card for case details.',
                 filters: {
                     countries: ['All', 'Germany', 'Portugal', 'Chile', 'Ireland', 'Italy', 'Sweden', 'Myanmar', 'EU', 'UK', 'Canada', 'USA', 'Australia', 'New Zealand', 'South Africa', 'Brazil', 'India', 'Thailand'],
@@ -332,7 +335,7 @@
                 ]
             },
             challenges: {
-                title: 'V. Strategic Environmental Assessment: Challenges, Limitations, and Common Weaknesses',
+                title: 'VI. Strategic Environmental Assessment: Challenges, Limitations, and Common Weaknesses',
                 introduction: 'While Strategic Environmental Assessment has made significant progress, it still faces numerous challenges in practice. This section will discuss the main obstacles and common weaknesses in SEA practice.',
                 tabs: [
                     { 
@@ -465,7 +468,7 @@
                 ]
             },
             theory: {
-                title: 'VI. Strategic Environmental Assessment: Theoretical Foundations',
+                title: 'II. Strategic Environmental Assessment: Theoretical Foundations',
                 introduction: 'The practice of Strategic Environmental Assessment is rooted in different philosophical schools of thought and continuously develops its theoretical foundations. Understanding these theories helps us grasp the essence of SEA and apply it more effectively in various decision-making contexts.',
                 sections: [
                     {
